@@ -159,26 +159,14 @@ def calculate_risk_score(
     frequency_score,
     persistence_score
 ):
-    # -------------------------
-    # Attack severity
-    # -------------------------
 
     base_score = ATTACK_SEVERITY.get(
         attack_type,
         50
     )
 
-    # -------------------------
-    # ML evidence
-    # -------------------------
-
-    binary_confidence_score = (
-        binary_confidence * 100
-    )
-
-    attack_confidence_score = (
-        attack_confidence * 100
-    )
+    binary_confidence_score = binary_confidence * 100
+    attack_confidence_score = attack_confidence * 100
 
     ml_evidence = (
         0.40 * base_score +
@@ -186,25 +174,30 @@ def calculate_risk_score(
         0.30 * attack_confidence_score
     )
 
-    # -------------------------
-    # Final multi-factor score
-    # -------------------------
+    attack_severity_component = 0.60 * 0.40 * base_score
+    binary_confidence_component = (
+        0.60 * 0.30 * binary_confidence_score
+    )
+    attack_confidence_component = (
+        0.60 * 0.30 * attack_confidence_score
+    )
+    traffic_component = 0.15 * traffic_intensity
+    frequency_component = 0.10 * frequency_score
+    persistence_component = 0.15 * persistence_score
 
     risk_score = (
-        0.60 * ml_evidence +
-        0.15 * traffic_intensity +
-        0.10 * frequency_score +
-        0.15 * persistence_score
+        attack_severity_component +
+        binary_confidence_component +
+        attack_confidence_component +
+        traffic_component +
+        frequency_component +
+        persistence_component
     )
 
     risk_score = round(
         max(0, min(100, risk_score)),
         2
     )
-
-    # -------------------------
-    # Severity
-    # -------------------------
 
     if risk_score >= 80:
         severity = "CRITICAL"
@@ -218,7 +211,84 @@ def calculate_risk_score(
     else:
         severity = "LOW"
 
+    risk_factors = {
+
+        "attack_severity": {
+            "base_score": base_score
+        },
+
+        "binary_ml": {
+            "confidence": round(
+                float(binary_confidence),
+                4
+            ),
+            "score": round(
+                float(binary_confidence_score),
+                2
+            )
+        },
+
+        "attack_classification": {
+            "confidence": round(
+                float(attack_confidence),
+                4
+            ),
+            "score": round(
+                float(attack_confidence_score),
+                2
+            )
+        },
+
+        "traffic_intensity": round(
+            float(traffic_intensity),
+            2
+        ),
+
+        "attack_frequency": round(
+            float(frequency_score),
+            2
+        ),
+
+        "persistence": round(
+            float(persistence_score),
+            2
+        ),
+
+        "ml_evidence": round(
+            float(ml_evidence),
+            2
+        ),
+
+        "risk_contribution": {
+            "attack_severity": round(
+                float(attack_severity_component),
+                2
+            ),
+            "binary_confidence": round(
+                float(binary_confidence_component),
+                2
+            ),
+            "attack_confidence": round(
+                float(attack_confidence_component),
+                2
+            ),
+            "traffic_intensity": round(
+                float(traffic_component),
+                2
+            ),
+            "attack_frequency": round(
+                float(frequency_component),
+                2
+            ),
+            "persistence": round(
+                float(persistence_component),
+                2
+            )
+        }
+    }
+
     return {
         "risk_score": risk_score,
-        "severity": severity
+        "severity": severity,
+        "risk_factors": risk_factors
     }

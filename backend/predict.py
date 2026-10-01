@@ -205,13 +205,11 @@ def apply_risk_score(
 
     result["persistence"] = persistence_score
 
-    result["risk_score"] = risk[
-        "risk_score"
-    ]
+    result["risk_score"] = risk["risk_score"]
 
-    result["severity"] = risk[
-        "severity"
-    ]
+    result["severity"] = risk["severity"]
+    
+    result["risk_factors"] = risk["risk_factors"]
 
     result["alert"] = generate_alert(
 
