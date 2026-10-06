@@ -5,6 +5,7 @@ from fastapi import (
     WebSocket,
     WebSocketDisconnect,
     HTTPException,
+    Depends
 )
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, create_model
@@ -20,12 +21,19 @@ from backend.risk_engine import (
 )
 from backend.database import SessionLocal
 from backend.db_models import Alert
+from sqlalchemy import func
 
 import joblib
 import numpy as np
 import pandas as pd
 
 from collections import deque
+from backend.auth_routes import router as auth_router
+
+try:
+    from backend.auth_dependencies import get_current_user, require_admin
+except ModuleNotFoundError:
+    from auth_dependencies import get_current_user, require_admin
 
 
 # =========================================================
@@ -33,6 +41,7 @@ from collections import deque
 # =========================================================
 
 app = FastAPI()
+app.include_router(auth_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -102,7 +111,7 @@ BatchTrafficData = create_model(
 # =========================================================
 
 @app.post("/predict")
-def predict(data: TrafficData):  # type: ignore[valid-type]
+def predict(data: TrafficData,current_user=Depends(get_current_user)):  # type: ignore[valid-type]
     data_dict = data.model_dump(by_alias=True)
     df = pd.DataFrame([data_dict])
 
@@ -116,7 +125,7 @@ def predict(data: TrafficData):  # type: ignore[valid-type]
 # =========================================================
 
 @app.post("/predict/batch")
-def predict_batch_endpoint(data: BatchTrafficData):  # type: ignore[valid-type]
+def predict_batch_endpoint(data: BatchTrafficData,current_user=Depends(get_current_user)):  # type: ignore[valid-type]
     records = data.records
 
     data_dict = [
@@ -268,7 +277,8 @@ def create_csv_alerts(
 # =========================================================
 
 @app.post("/upload-csv")
-def upload_csv(file: UploadFile = File(...)):
+def upload_csv( file: UploadFile = File(...),
+    current_user=Depends(get_current_user)):
     filename = file.filename or "uploaded.csv"
 
     if not filename.lower().endswith(".csv"):
@@ -605,16 +615,22 @@ async def websocket_dashboard(websocket: WebSocket):
 
     dashboard_clients.add(websocket)
 
-    await websocket.send_json({
-        "status": "connected",
-        "message": "Dashboard live monitoring connected",
-    })
-
     try:
+        await websocket.send_json({
+            "status": "connected",
+            "message": "Dashboard live monitoring connected",
+        })
+
         while True:
             await websocket.receive_text()
 
+    except WebSocketDisconnect:
+        pass
+
     except Exception:
+        pass
+
+    finally:
         dashboard_clients.discard(websocket)
 
 
@@ -629,12 +645,25 @@ async def websocket_dashboard(websocket: WebSocket):
 # =========================================================
 
 @app.get("/alerts")
-def get_alerts():
+def get_alerts(current_user=Depends(get_current_user)):
     db = SessionLocal()
 
     try:
+        # The dashboard/list view does not need the large JSON columns
+        # (risk_factors and traffic_data). Selecting only the summary
+        # columns keeps PostgreSQL responses small and releases the
+        # database connection much faster.
         alert_records = (
-            db.query(Alert)
+            db.query(
+                Alert.id,
+                Alert.timestamp,
+                Alert.attack_type,
+                Alert.risk_score,
+                Alert.severity,
+                Alert.status,
+                Alert.source,
+                Alert.source_file,
+            )
             .order_by(Alert.timestamp.desc())
             .all()
         )
@@ -670,6 +699,7 @@ def get_alerts():
 def update_alert_status(
     alert_id: int,
     status: str,
+    current_user=Depends(get_current_user)
 ):
     valid_statuses = [
         "OPEN",
@@ -731,7 +761,7 @@ def update_alert_status(
 # =========================================================
 
 @app.get("/alerts/status/{status}")
-def get_alerts_by_status(status: str):
+def get_alerts_by_status(status: str,current_user=Depends(get_current_user)):
     status = status.upper()
 
     db = SessionLocal()
@@ -773,7 +803,7 @@ def get_alerts_by_status(status: str):
 # =========================================================
 
 @app.get("/alerts/{alert_id}")
-def get_alert(alert_id: int):
+def get_alert(alert_id: int,current_user=Depends(get_current_user)):
     db = SessionLocal()
 
     try:
@@ -815,13 +845,13 @@ def get_alert(alert_id: int):
 # =========================================================
 
 @app.get("/analytics/summary")
-def analytics_summary():
+def analytics_summary(current_user=Depends(get_current_user)):
     db = SessionLocal()
 
     try:
-        all_alerts = db.query(Alert).all()
-
-        total_alerts = len(all_alerts)
+        # Use PostgreSQL aggregation instead of loading every alert
+        # (including large JSON columns) into Python memory.
+        total_alerts = db.query(func.count(Alert.id)).scalar() or 0
 
         severity_counts = {
             "CRITICAL": 0,
@@ -830,28 +860,53 @@ def analytics_summary():
             "LOW": 0,
         }
 
+        severity_rows = (
+            db.query(
+                Alert.severity,
+                func.count(Alert.id),
+            )
+            .group_by(Alert.severity)
+            .all()
+        )
+
+        for severity, count in severity_rows:
+            if severity in severity_counts:
+                severity_counts[severity] = count
+
         status_counts = {
             "OPEN": 0,
             "ACKNOWLEDGED": 0,
             "RESOLVED": 0,
         }
 
+        status_rows = (
+            db.query(
+                Alert.status,
+                func.count(Alert.id),
+            )
+            .group_by(Alert.status)
+            .all()
+        )
+
+        for status, count in status_rows:
+            if status in status_counts:
+                status_counts[status] = count
+
         attack_type_counts = {}
 
-        for alert in all_alerts:
-            if alert.severity in severity_counts:
-                severity_counts[alert.severity] += 1
+        attack_type_rows = (
+            db.query(
+                Alert.attack_type,
+                func.count(Alert.id),
+            )
+            .filter(Alert.attack_type.isnot(None))
+            .group_by(Alert.attack_type)
+            .all()
+        )
 
-            if alert.status in status_counts:
-                status_counts[alert.status] += 1
-
-            if alert.attack_type:
-                attack_type_counts[alert.attack_type] = (
-                    attack_type_counts.get(
-                        alert.attack_type,
-                        0,
-                    ) + 1
-                )
+        for attack_type, count in attack_type_rows:
+            if attack_type:
+                attack_type_counts[attack_type] = count
 
         return {
             "total_alerts": total_alerts,
@@ -869,7 +924,7 @@ def analytics_summary():
 # =========================================================
 
 @app.get("/analytics/traffic")
-def analytics_traffic():
+def analytics_traffic(current_user=Depends(get_current_user)):
     total_traffic = monitor_stats["total_traffic"]
     benign_count = monitor_stats["benign_count"]
     attack_count = monitor_stats["attack_count"]
@@ -908,31 +963,27 @@ def analytics_traffic():
 # =========================================================
 
 @app.get("/analytics/attack-trend")
-def attack_trend():
+def attack_trend(current_user=Depends(get_current_user)):
     db = SessionLocal()
 
     try:
-        alert_records = (
-            db.query(Alert)
-            .order_by(Alert.timestamp.asc())
+        # Aggregate by day in PostgreSQL rather than loading all alerts
+        # into Python.
+        rows = (
+            db.query(
+                func.date(Alert.timestamp).label("date"),
+                func.count(Alert.id).label("attack_count"),
+            )
+            .group_by(func.date(Alert.timestamp))
+            .order_by(func.date(Alert.timestamp).asc())
             .all()
         )
 
-        daily_attacks = {}
-
-        for alert in alert_records:
-            date = alert.timestamp.date().isoformat()
-
-            if date not in daily_attacks:
-                daily_attacks[date] = 0
-
-            daily_attacks[date] += 1
-
         trend = []
 
-        for date, count in daily_attacks.items():
+        for date, count in rows:
             trend.append({
-                "date": date,
+                "date": date.isoformat() if hasattr(date, "isoformat") else str(date),
                 "attack_count": count,
             })
 
@@ -949,29 +1000,24 @@ def attack_trend():
 # =========================================================
 
 @app.get("/analytics/attack-types")
-def attack_type_distribution():
+def attack_type_distribution(current_user=Depends(get_current_user)):
     db = SessionLocal()
 
     try:
-        alert_records = (
-            db.query(Alert)
+        rows = (
+            db.query(
+                Alert.attack_type,
+                func.count(Alert.id).label("count"),
+            )
             .filter(Alert.attack_type.isnot(None))
+            .group_by(Alert.attack_type)
+            .order_by(func.count(Alert.id).desc())
             .all()
         )
 
-        attack_types = {}
-
-        for alert in alert_records:
-            attack_type = alert.attack_type
-
-            if attack_type not in attack_types:
-                attack_types[attack_type] = 0
-
-            attack_types[attack_type] += 1
-
         distribution = []
 
-        for attack_type, count in attack_types.items():
+        for attack_type, count in rows:
             distribution.append({
                 "attack_type": attack_type,
                 "count": count,

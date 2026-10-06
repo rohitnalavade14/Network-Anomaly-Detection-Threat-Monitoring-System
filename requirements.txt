@@ -1,5 +1,29 @@
+# Machine Learning / Data Science
 pandas
 numpy
+scikit-learn
+joblib
 matplotlib
 seaborn
 jupyter
+ipykernel
+
+
+# FastAPI Backend
+fastapi
+uvicorn
+pydantic
+python-multipart
+
+
+# PostgreSQL / Database
+sqlalchemy
+psycopg[binary]
+
+
+# Authentication / Security
+PyJWT
+pwdlib
+
+# WebSocket
+websockets

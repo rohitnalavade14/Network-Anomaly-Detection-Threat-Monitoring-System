@@ -1,1 +1,59 @@
+# DATA
 data/
+
+
+# PYTHON
+__pycache__/
+*.py[cod]
+*.pyo
+
+.venv/
+venv/
+env/
+
+*.egg-info/
+
+
+# ENVIRONMENT / SECRETS
+.env
+.env.*
+!.env.example
+
+
+# JUPYTER
+.ipynb_checkpoints/
+
+
+# REACT / NODE
+node_modules/
+dist/
+dist-ssr/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+*.local
+
+
+# IDE / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+
+
+# TEMP / LOGS
+*.log
+logs/
+
+
+# PYTHON GENERATED FILES
+*.tmp
+*.temp
