@@ -1,57 +1,55 @@
-## Contributing Guidelines (For Interns / Collaborators)
+# 🛡️ NetShield AI — Network Anomaly Detection & Threat Monitoring Platform
 
-All interns added as collaborators to this repository must follow the branch workflow below. **Direct commits or pushes to the `main` branch are not allowed.**
+<p align="center">
 
-> Note: `main` only contains the `LICENSE` and `README.md` — it is not used for active development. There is no need to pull the latest `main` into your branch at any point.
+AI-powered network security platform for detecting, classifying, scoring, and monitoring network threats in real time.
 
-### 1. Branch Naming
+</p>
 
-- Every intern must create their own branch off `main`, named after themselves.
-- Suggested naming convention: `firstname-lastname` (all lowercase, hyphen-separated).
-  - Example: `john-doe`, `aisha-khan`
+<p align="center">
 
-### 2. How to Create Your Branch
+<img src="https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white" />
+<img src="https://img.shields.io/badge/React-19+-61DAFB?logo=react&logoColor=black" />
+<img src="https://img.shields.io/badge/PostgreSQL-16+-4169E1?logo=postgresql&logoColor=white" />
+<img src="https://img.shields.io/badge/Scikit--learn-Random%20Forest-F7931E?logo=scikit-learn&logoColor=white" />
+<img src="https://img.shields.io/badge/WebSocket-Real--Time-4CAF50" />
+<img src="https://img.shields.io/badge/Docker-Deployment-2496ED?logo=docker&logoColor=white" />
+<img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
 
-**Option A — Clone and push (recommended)**
+</p>
 
-```bash
-# Clone the repository
-git clone https://github.com/springboardmentor442n-coder/Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform.git
+> **NetShield AI** is an end-to-end AI-powered network security platform that analyzes network traffic, detects malicious activity, classifies attack types, calculates a multi-factor risk score, and generates actionable security alerts through a real-time monitoring dashboard.
 
-# Move into the project folder
-cd Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform
+---
 
-# Create and switch to your own branch (off main)
-git checkout -b your-name
+## 🎯 System Architecture
 
-# ... make your changes ...
+```mermaid
+flowchart LR
 
-# Stage, commit, and push your changes to YOUR branch only
-git add .
-git commit -m "Describe your change here"
-git push origin your-name
-```
+    A[🌐 Network Traffic] --> B[🧹 Preprocessing]
 
-**Option B — GitHub UI upload**
+    B --> C[🤖 Model 1<br/>Binary Detection]
 
-1. Go to the repository on GitHub.
-2. Switch the branch dropdown from `main` to your own branch (create it first via **Branch: main → View all branches → New branch**, named after yourself).
-3. Once on your branch, use **Add file → Upload files** to upload your code.
-4. Commit directly to your branch (not `main`).
+    C -->|BENIGN| D[✅ Benign Traffic]
 
-### 3. Rules
+    C -->|ATTACK| E[🤖 Model 2<br/>Attack Classification]
 
-- ❌ Do **not** push or upload code directly to `main`.
-- ❌ Do **not** push code to another intern's branch.
-- ✅ Only push/upload code to the branch that carries your own name.
-- Keep uploading/pushing your code to your branch regularly as you make progress. No pull requests are required — your branch itself is the deliverable.
+    E --> F[🎯 Attack Type]
 
-### 4. Summary
+    F --> G[⚠️ Risk Engine]
 
-| Action | Allowed? |
-|---|---|
-| Push to `main` directly | ❌ No |
-| Create your own branch from `main` | ✅ Yes |
-| Push/upload code to your own branch | ✅ Yes |
-| Push/upload code to someone else's branch | ❌ No |
-| Open a Pull Request | Not required |
+    G --> H[📊 Risk Score<br/>+ Severity]
+
+    H --> I[🚨 Alert Generation]
+
+    I --> J[(🗄️ PostgreSQL)]
+
+    J --> K[🖥️ React Dashboard]
+
+    I --> L[⚡ WebSocket]
+
+    L --> K
+
+    K --> M[👨‍💻 Security Analyst]
