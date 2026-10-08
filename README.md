@@ -17,7 +17,9 @@ AI-powered network security platform for detecting, classifying, scoring, and mo
 
 </p>
 
-> **NetShield AI** is an end-to-end AI-powered network security platform that analyzes network traffic, detects malicious activity, classifies attack types, calculates a multi-factor risk score, and generates actionable security alerts through a real-time monitoring dashboard.
+> **NetShield AI** is an AI-powered network security platform that leverages Machine Learning (ML) models to monitor and analyze network traffic. A **Binary Classification ML model** first detects whether traffic is benign or malicious, while a **Multiclass Classification model** identifies the specific attack type such as DoS, DDoS, or PortScan. A multi-factor **Risk Engine** then evaluates the detected threat and generates a risk score with an appropriate severity level.
+
+> The platform also includes **JWT-based authentication** and **Role-Based Access Control (RBAC)** with two roles: Admin and Security Analyst. JWT tokens securely authenticate users and protect the backend APIs, while RBAC ensures that users can only perform actions permitted for their role—for example, only an Admin can create new Security Analyst accounts. Detected threats are stored in **PostgreSQL**, and the React dashboard provides real-time monitoring, analytics, alert management, CSV analysis, and live WebSocket updates.
 
 ---
 
@@ -391,4 +393,4 @@ You should have the following running:
 │  Analytics                  │
 └─────────────────────────────┘
 ```
-.
+
