@@ -1,4 +1,4 @@
-# 🛡️ NetShield AI — Network Anomaly Detection & Threat Monitoring Platform
+# 🛡️ NetShield AI - Network Anomaly Detection & Threat Monitoring Platform
 
 <p align="center">
 
@@ -156,7 +156,7 @@ git lfs version
 ## 2. Clone the Repository
 
 ```bash
-git clone <YOUR-GITHUB-REPOSITORY-URL>
+git clone https://github.com/rohitnalavade14/Network-Anomaly-Detection-Threat-Monitoring-System
 cd Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform
 ```
 
@@ -391,27 +391,4 @@ You should have the following running:
 │  Analytics                  │
 └─────────────────────────────┘
 ```
-
-### Terminal 1 — Backend
-
-```powershell
-.\venv\Scripts\Activate.ps1
-uvicorn backend.main:app
-```
-
-### Terminal 2 — Frontend
-
-```powershell
-cd frontend
-npm install
-npm run dev
-```
-
-### Browser
-
-```text
-http://localhost:5173
-```
-
----
 .
