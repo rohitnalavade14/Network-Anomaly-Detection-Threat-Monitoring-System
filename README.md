@@ -54,6 +54,22 @@ flowchart LR
 
     K --> M["👨‍💻 Security Analyst"]
 ```
+---
+## 🔄 System Workflow
+
+<p align="center">
+  <a href="https://netshieldai-workflow.netlify.app/" target="_blank">
+    <img src="docs/netshield-workflow.png" alt="NetShield AI Workflow" width="100%">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://netshieldai-workflow.netlify.app/">
+    🔗 View Interactive Workflow | Click Here !!
+  </a>
+</p>
+
+---
 
 ## 📁 Project Structure
 
