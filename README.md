@@ -57,15 +57,11 @@ flowchart LR
 ---
 ## 🔄 System Workflow
 
-<p align="center">
-  <a href="https://netshieldai-workflow.netlify.app/" target="_blank">
-    <img src="docs/netshield-workflow.png" alt="NetShield AI Workflow" width="100%">
-  </a>
-</p>
+> The NetShield AI workflow illustrates the complete **end-to-end threat-detection pipeline**, showing how network traffic moves from data ingestion and preprocessing to ML model analysis, risk evaluation, alert generation, storage, and real-time security monitoring.
 
 <p align="center">
-  <a href="https://netshieldai-workflow.netlify.app/">
-    🔗 View Interactive Workflow | Click Here !!
+  <a href="https://netshieldai-workflow.netlify.app/" target="_blank">
+    🔗 View Interactive Workflow
   </a>
 </p>
 
