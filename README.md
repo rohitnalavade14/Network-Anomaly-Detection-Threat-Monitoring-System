@@ -51,9 +51,9 @@ flowchart LR
     L --> K
 
     K --> M[👨‍💻 Security Analyst]
+``` 
 
-
-##📁 Project Structure
+#📁 Project Structure
 
 Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform/
 │
