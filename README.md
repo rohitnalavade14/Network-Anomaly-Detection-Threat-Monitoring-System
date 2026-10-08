@@ -26,35 +26,36 @@ AI-powered network security platform for detecting, classifying, scoring, and mo
 ```mermaid
 flowchart LR
 
-    A[🌐 Network Traffic] --> B[🧹 Preprocessing]
+    A["🌐 Network Traffic"] --> B["🧹 Preprocessing"]
 
-    B --> C[🤖 Model 1<br/>Binary Detection]
+    B --> C["🤖 Model 1<br/>Binary Detection"]
 
-    C -->|BENIGN| D[✅ Benign Traffic]
+    C -->|BENIGN| D["✅ Benign Traffic"]
 
-    C -->|ATTACK| E[🤖 Model 2<br/>Attack Classification]
+    C -->|ATTACK| E["🤖 Model 2<br/>Attack Classification"]
 
-    E --> F[🎯 Attack Type]
+    E --> F["🎯 Attack Type"]
 
-    F --> G[⚠️ Risk Engine]
+    F --> G["⚠️ Risk Engine"]
 
-    G --> H[📊 Risk Score<br/>+ Severity]
+    G --> H["📊 Risk Score<br/>+ Severity"]
 
-    H --> I[🚨 Alert Generation]
+    H --> I["🚨 Alert Generation"]
 
-    I --> J[(🗄️ PostgreSQL)]
+    I --> J[("🗄️ PostgreSQL")]
 
-    J --> K[🖥️ React Dashboard]
+    J --> K["🖥️ React Dashboard"]
 
-    I --> L[⚡ WebSocket]
+    I --> L["⚡ WebSocket"]
 
     L --> K
 
-    K --> M[👨‍💻 Security Analyst]
-``` 
+    K --> M["👨‍💻 Security Analyst"]
+```
 
-##📁 Project Structure
+## 📁 Project Structure
 
+```text
 Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform/
 │
 ├── backend/
@@ -123,6 +124,7 @@ Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform/
 ├── docker-compose.yml
 ├── .gitignore
 └── README.md
+```
 
 ## ⚡ Quick Start
 
@@ -413,5 +415,3 @@ http://localhost:5173
 
 ---
 .
-
-
