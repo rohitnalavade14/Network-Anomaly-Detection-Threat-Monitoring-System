@@ -53,7 +53,78 @@ flowchart LR
     K --> M[👨‍💻 Security Analyst]
 
 
-# ⚡ Quick Start
+##📁 Project Structure
+
+Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform/
+│
+├── backend/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── predict.py
+│   ├── risk_engine.py
+│   ├── database.py
+│   ├── db_models.py
+│   ├── auth.py
+│   ├── auth_dependencies.py
+│   ├── auth_routes.py
+│   ├── create_admin.py
+│   └── init_db.py
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Alerts.jsx
+│   │   │   ├── AlertDetails.jsx
+│   │   │   ├── CSVUpload.jsx
+│   │   │   ├── LiveMonitoring.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── CreateUser.jsx
+│   │   │   └── NotFound.jsx
+│   │   │
+│   │   ├── utils/
+│   │   │   └── auth.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.js
+│
+├── models/
+│   ├── model_random_forest.pkl
+│   ├── model_attack_classifier.pkl
+│   ├── binary_preprocessing_medians.pkl
+│   ├── feature_columns.pkl
+│   └── risk_reference.pkl
+│
+├── notebooks/
+│   ├── data_inspection.ipynb
+│   ├── data_cleaning.ipynb
+│   ├── binary_attack_detection.ipynb
+│   └── attack_type_classification.ipynb
+│
+├── tests/
+│   ├── test_api.py
+│   ├── test_websocket.py
+│   ├── test_frequency.py
+│   ├── test_persistence.py
+│   ├── test_risk_intensity.py
+│   ├── inspect_risk_features.py
+│   ├── inspect_risk_percentiles.py
+│   ├── create_risk_reference.py
+│   └── create_test_csv.py
+│
+├── requirements.txt
+├── docker-compose.yml
+├── .gitignore
+└── README.md
+
+## ⚡ Quick Start
 
 Follow the steps below to run **NetShield AI** locally.
 
