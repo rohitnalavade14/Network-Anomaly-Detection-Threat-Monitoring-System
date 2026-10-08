@@ -157,7 +157,7 @@ git lfs version
 
 ```bash
 git clone https://github.com/rohitnalavade14/Network-Anomaly-Detection-Threat-Monitoring-System
-cd Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform
+cd Network-Anomaly-Detection-Threat-Monitoring-System
 ```
 
 ---
