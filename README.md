@@ -135,7 +135,6 @@ Network-Anomaly-Detection-and-Predictive-Intrusion-Monitoring-Platform/
 │   └── create_test_csv.py
 │
 ├── requirements.txt
-├── docker-compose.yml
 ├── .gitignore
 └── README.md
 ```
