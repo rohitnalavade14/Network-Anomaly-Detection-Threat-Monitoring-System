@@ -66,6 +66,14 @@ flowchart LR
 </p>
 
 ---
+---
+
+## Dataset
+
+- **CICIDS2017:** Used for training and evaluating the network intrusion detection models.
+- **Kaggle Dataset:** [Network Intrusion Dataset – CICIDS2017](https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset)
+
+---
 
 ## 📁 Project Structure
 
